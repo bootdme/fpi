@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-source variables.sh
+. ./variables.sh
 
 printf "\n%s====================Script starts====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 

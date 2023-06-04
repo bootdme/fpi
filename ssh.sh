@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source variables.sh
+. ./variables.sh
 
 set -euo pipefail
 
@@ -30,6 +30,6 @@ read -rp "${tty_green}Please enter your Github Personal token: ${tty_reset}" GIT
 
 curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d "{\"title\":\"FedoraKey\",\"key\":\"$(cat ~/.ssh/id_ed25519.pub)\"}" https://api.github.com/user/keys
 
-printf "%sRun ./dots.sh%s\n\n" "${tty_green}" "${tty_reset}"
+printf "%sRun ./packages.sh%s\n\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"
