@@ -4,9 +4,9 @@
 
 printf "\n%s====================Script starts====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 
-# echo 'fastestmirror=1' | sudo tee -a /etc/dnf/dnf.conf
-# echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
-# echo 'deltarpm=true' | sudo tee -a /etc/dnf/dnf.conf
+echo 'fastestmirror=1' | sudo tee -a /etc/dnf/dnf.conf
+echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
+echo 'deltarpm=true' | sudo tee -a /etc/dnf/dnf.conf
 
 localectl status
 
@@ -20,7 +20,7 @@ sudo fwupdmgr refresh --force
 sudo fwupdmgr get-updates
 sudo fwupdmgr update
 
-sudo dnf install -y  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 sudo dnf groupupdate core
