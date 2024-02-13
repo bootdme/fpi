@@ -14,10 +14,10 @@ if [ ! -d ~/.gnupg || ! -f ~/.gnupg/gpg-agent.conf ]; then
 
 	gpg --full-generate-key
 
-	gpg --armor --export "$EMAIL" | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d "{\"armored_public_key\":\"$(awk '{printf "%s\\n", $0}' ORS='')\"}" https://api.github.com/user/gpg_keys
+	gpg --armor --export "$EMAIL" | curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d "{\"title\":\"FedoraKey\",\"armored_public_key\":\"$(awk '{printf "%s\\n", $0}' ORS='')\"}" https://api.github.com/user/gpg_keys
 fi
 
 printf "%sKeys have been added to GitHub%s\n" "${tty_green}" "${tty_reset}"
-printf "%sExecute chsh -s $(which fish), close and re-open terminal and then run ./cleanup.sh%s\n" "${tty_green}" "${tty_reset}"
+printf "%sExecute chsh -s nu, close and re-open terminal and then run ./cleanup.sh%s\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"

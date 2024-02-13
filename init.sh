@@ -27,6 +27,6 @@ sudo dnf groupupdate core
 sudo dnf install -y rpmfusion-free-release-tainted
 sudo dnf install -y dnf-plugins-core
 
-printf "%sExecute sudo reboot now and run ./ssh%s\n\n" "${tty_green}" "${tty_reset}"
+printf "%sRun ./ssh%s\n\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"
