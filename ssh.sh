@@ -1,35 +1,118 @@
 #!/bin/bash
 
-. ./variables.sh
+source variables.sh
 
 set -euo pipefail
 
-printf "\n%s====================Script starts====================%s\n\n" "${tty_yellow}" "${tty_reset}"
+printf "\n%s==================== Script starts ====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 
-# https://medium.com/risan/upgrade-your-ssh-key-to-ed25519-c6e8d60d3c54
-if [ ! -d ~/.ssh ] || [ ! -f ~/.ssh/id_ed25519 ]; then
-	printf "%sCreating SSH key pair for GitHub...%s\n\n" "${tty_green}" "${tty_reset}"
+# Function to create SSH key pair
+create_ssh_key() {
+	local email=$1
+	local service=$2
+	local name=$3
+	local key_file=~/.ssh/id_ed25519_${service}_${name}
 
-	read -rp "${tty_green}Please enter the email you use for GitHub: ${tty_reset}" EMAIL
+	if [ -f "$key_file" ]; then
+		printf "%sSSH key pair for %s (%s) already exists as %s.%s\n\n" \
+			"${tty_yellow}" "$service" "$email" "$name" "${tty_reset}"
+		return 1 # Indicate that the key already exists
+	else
+		printf "%sCreating SSH key pair for %s (%s) named %s...%s\n\n" \
+			"${tty_green}" "$service" "$email" "$name" "${tty_reset}"
 
-	ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/id_ed25519 -C "$EMAIL"
-	eval "$(ssh-agent -s)"
+		ssh-keygen -o -a 100 -t ed25519 -f "$key_file" -C "$email"
+		eval "$(ssh-agent -s)"
 
-	cat <<EOT >>~/.ssh/config
-Host *
+		cat <<EOT >>~/.ssh/config
+Host $name
+    HostName $service.com
+    User git
     AddKeysToAgent yes
-    IgnoreUnknown UseKeychain
     UseKeychain yes
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile $key_file
 EOT
 
-	ssh-add ~/.ssh/id_ed25519
-fi
+		ssh-add "$key_file"
+		return 0 # Indicate success
+	fi
+}
 
-read -rp "${tty_green}Please enter your Github Personal token: ${tty_reset}" GITHUB_TOKEN
+# Function to upload SSH key to GitHub
+upload_to_github() {
+	local email=$1
+	local name=$2
+	local token=$3
+	local key_file=~/.ssh/id_ed25519_github_${name}
 
-curl -H "Authorization: token $GITHUB_TOKEN" -X POST -d "{\"title\":\"FedoraKey\",\"key\":\"$(cat ~/.ssh/id_ed25519.pub)\"}" https://api.github.com/user/keys
+	curl -H "Authorization: token $token" -X POST -d "{\"title\":\"FedoraKey_${name}\",\"key\":\"$(cat $key_file.pub)\"}" https://api.github.com/user/keys
 
-printf "%sRun ./packages.sh%s\n\n" "${tty_green}" "${tty_reset}"
+	printf "%sSSH key was successfully added to GitHub%s\n" "${tty_green}" "${tty_reset}"
+}
 
-printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"
+# Function to upload SSH key to GitLab
+upload_to_gitlab() {
+	local email=$1
+	local name=$2
+	local token=$3
+	local key_file=~/.ssh/id_ed25519_gitlab_${name}
+
+	curl --silent --header "PRIVATE-TOKEN: $token" -X POST -d "title=FedoraKey_${name}&key=$(cat $key_file.pub)" https://gitlab.com/api/v4/user/keys
+
+	printf "\n%sSSH key was successfully added to GitLab%s\n" "${tty_green}" "${tty_reset}"
+}
+
+# Function to handle GitHub setup
+setup_github() {
+	local key_exists=1
+	while [ $key_exists -ne 0 ]; do
+		read -rp "${tty_green}Please enter the email you use for GitHub: ${tty_reset}" GITHUB_EMAIL
+		read -rp "${tty_green}Please enter a name for this GitHub key (e.g., work, personal): ${tty_reset}" GITHUB_NAME
+		create_ssh_key "$GITHUB_EMAIL" "github" "$GITHUB_NAME"
+		key_exists=$?
+	done
+	read -rp "${tty_green}Please enter your GitHub Personal token: ${tty_reset}" GITHUB_TOKEN
+	upload_to_github "$GITHUB_EMAIL" "$GITHUB_NAME" "$GITHUB_TOKEN"
+}
+
+# Function to handle GitLab setup
+setup_gitlab() {
+	local key_exists=1
+	while [ $key_exists -ne 0 ]; do
+		read -rp "${tty_green}Please enter the email you use for GitLab: ${tty_reset}" GITLAB_EMAIL
+		read -rp "${tty_green}Please enter a name for this GitLab key (e.g., work, personal): ${tty_reset}" GITLAB_NAME
+		create_ssh_key "$GITLAB_EMAIL" "gitlab" "$GITLAB_NAME"
+		key_exists=$?
+	done
+	read -rp "${tty_green}Please enter your GitLab Personal Access token: ${tty_reset}" GITLAB_TOKEN
+	upload_to_gitlab "$GITLAB_EMAIL" "$GITLAB_NAME" "$GITLAB_TOKEN"
+}
+
+# Loop to prompt the user for another action or to exit
+while true; do
+	printf "%sWhere would you like to upload your SSH key?%s\n" "${tty_green}" "${tty_reset}"
+	printf "1) GitHub\n"
+	printf "2) GitLab\n"
+	printf "3) Exit\n"
+	read -rp "${tty_green}Please enter the number corresponding to your choice: ${tty_reset}" CHOICE
+
+	case $CHOICE in
+	1)
+		setup_github
+		;;
+	2)
+		setup_gitlab
+		;;
+	3)
+		printf "%sExiting...%s\n" "${tty_yellow}" "${tty_reset}"
+		break
+		;;
+	*)
+		printf "%sInvalid option selected. Please choose 1, 2, or 3.%s\n\n" "${tty_red}" "${tty_reset}"
+		;;
+	esac
+done
+
+printf "%sRun ./dots.sh%s\n" "${tty_green}" "${tty_reset}"
+
+printf "\n%s==================== Script ends ====================%s\n\n" "${tty_yellow}" "${tty_reset}"
