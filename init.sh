@@ -12,6 +12,13 @@ localectl status
 
 timedatectl
 
+sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+sudo dnf groupupdate core
+sudo dnf install -y rpmfusion-free-release-tainted
+sudo dnf install -y dnf-plugins-core
+
 sudo dnf upgrade --refresh
 sudo dnf check
 sudo dnf autoremove
@@ -20,12 +27,13 @@ sudo fwupdmgr refresh --force
 sudo fwupdmgr get-updates
 sudo fwupdmgr update
 
-sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+# Install NVIDIA driver
+if echo "$(lspci | grep -e VGA)" | grep -q "NVIDIA"; then
+	sudo dnf install akmod-nvidia
+fi
 
-sudo dnf groupupdate core
-sudo dnf install -y rpmfusion-free-release-tainted
-sudo dnf install -y dnf-plugins-core
+# Install rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 printf "%sRun ./ssh%s\n\n" "${tty_green}" "${tty_reset}"
 
