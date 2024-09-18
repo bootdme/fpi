@@ -17,6 +17,6 @@ sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
 sudo dnf config-manager --add-repo https://repository.mullvad.net/rpm/stable/mullvad.repo
 
-printf "%sRun ./dots.sh%s\n" "${tty_green}" "${tty_reset}"
+printf "%sRun ./gpg.sh%s\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"

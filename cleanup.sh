@@ -18,7 +18,7 @@ remove_file_or_directory() {
 			printf "%sError: %s is not a valid file or directory.%s\n" "${tty_red}" "${file_or_directory}" "${tty_reset}"
 		fi
 	else
-		printf "%sWarning: %s does not exist.%s\n" "${tty_red}" "${file_or_directory}" "${tty_reset}"
+		printf "%s%s does not exist.%s\n" "${tty_red}" "${file_or_directory}" "${tty_reset}"
 	fi
 }
 

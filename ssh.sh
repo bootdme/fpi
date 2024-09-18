@@ -6,7 +6,6 @@ set -euo pipefail
 
 printf "\n%s==================== Script starts ====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 
-# Function to create SSH key pair
 create_ssh_key() {
 	local email=$1
 	local service=$2
@@ -16,7 +15,7 @@ create_ssh_key() {
 	if [ -f "$key_file" ]; then
 		printf "%sSSH key pair for %s (%s) already exists as %s.%s\n\n" \
 			"${tty_yellow}" "$service" "$email" "$name" "${tty_reset}"
-		return 1 # Indicate that the key already exists
+		return 1
 	else
 		printf "%sCreating SSH key pair for %s (%s) named %s...%s\n\n" \
 			"${tty_green}" "$service" "$email" "$name" "${tty_reset}"
@@ -34,11 +33,10 @@ Host $name
 EOT
 
 		ssh-add "$key_file"
-		return 0 # Indicate success
+		return 0
 	fi
 }
 
-# Function to upload SSH key to GitHub
 upload_to_github() {
 	local email=$1
 	local name=$2
@@ -50,7 +48,6 @@ upload_to_github() {
 	printf "%sSSH key was successfully added to GitHub%s\n" "${tty_green}" "${tty_reset}"
 }
 
-# Function to upload SSH key to GitLab
 upload_to_gitlab() {
 	local email=$1
 	local name=$2
@@ -62,7 +59,6 @@ upload_to_gitlab() {
 	printf "\n%sSSH key was successfully added to GitLab%s\n" "${tty_green}" "${tty_reset}"
 }
 
-# Function to handle GitHub setup
 setup_github() {
 	local key_exists=1
 	while [ $key_exists -ne 0 ]; do
@@ -75,7 +71,6 @@ setup_github() {
 	upload_to_github "$GITHUB_EMAIL" "$GITHUB_NAME" "$GITHUB_TOKEN"
 }
 
-# Function to handle GitLab setup
 setup_gitlab() {
 	local key_exists=1
 	while [ $key_exists -ne 0 ]; do
@@ -88,7 +83,6 @@ setup_gitlab() {
 	upload_to_gitlab "$GITLAB_EMAIL" "$GITLAB_NAME" "$GITLAB_TOKEN"
 }
 
-# Loop to prompt the user for another action or to exit
 while true; do
 	printf "%sWhere would you like to upload your SSH key?%s\n" "${tty_green}" "${tty_reset}"
 	printf "1) GitHub\n"
