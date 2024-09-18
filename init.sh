@@ -45,6 +45,19 @@ fi
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
+# Add nu to /etc/shells if not already present
+sudo sh -c 'if ! grep -q "$HOME/.cargo/bin/nu" "/etc/shells"; then echo "/home/bootdme/.cargo/bin/nu" >> /etc/shells; fi'
+
+# Brave Browser
+sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+
+sudo dnf config-manager --add-repo https://repository.mullvad.net/rpm/stable/mullvad.repo
+
+# Carpace download and install
+curl -L -o ~/Downloads/carapace-bin_1.0.6_linux_amd64.rpm https://github.com/carapace-sh/carapace-bin/releases/download/v1.0.6/carapace-bin_1.0.6_linux_amd64.rpm
+sudo dnf install ~/Downloads/carapace-bin_1.0.6_linux_amd64.rpm
+
 printf "%sRun ./ssh%s\n\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"
