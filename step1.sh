@@ -82,6 +82,7 @@ if [ ! -d "$HOME/.config/nushell" ]; then
 	mkdir -p "$HOME/.config/nushell"
 fi
 
+printf "%sReload your terminal\n" "${tty_green}" "${tty_reset}"
 printf "%sRun ./step2.sh%s\n\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s====================Script ends====================%s\n\n" "${tty_yellow}" "${tty_reset}"
