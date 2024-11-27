@@ -2,8 +2,6 @@
 
 . ./variables.sh
 
-set -euo pipefail
-
 printf "\n%s====================Script starts====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 
 printf "%sInstalling dots and dependencies...%s\n" "${tty_green}" "${tty_reset}"
