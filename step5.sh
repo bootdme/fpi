@@ -24,25 +24,8 @@ remove_file_or_directory() {
 
 printf "\n%s====================Script starts====================%s\n\n" "${tty_yellow}" "${tty_reset}"
 
-remove_file_or_directory "$HOME/.zprofile"
-remove_file_or_directory "$HOME/.zsh_history"
-remove_file_or_directory "$HOME/.zshenv"
-remove_file_or_directory "$HOME/.zshrc"
-remove_file_or_directory "$HOME/.zsh_sessions"
-remove_file_or_directory "$HOME/.zcompdump"
-
-remove_file_or_directory "$HOME/.bashrc"
-remove_file_or_directory "$HOME/.bash_history"
-remove_file_or_directory "$HOME/.bash_logout"
-remove_file_or_directory "$HOME/.bash_profile"
-remove_file_or_directory "$HOME/.bashdb_hist"
-remove_file_or_directory "$HOME/.profile"
-
 remove_file_or_directory "$HOME/.viminfo"
 remove_file_or_directory "$HOME/.vim"
-
-remove_file_or_directory "$HOME/.fzf.bash"
-remove_file_or_directory "$HOME/.fzf.zsh"
 
 remove_file_or_directory "$HOME/.mozilla"
 
