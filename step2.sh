@@ -107,6 +107,6 @@ while true; do
 	esac
 done
 
-printf "%sRun ./dots.sh%s\n" "${tty_green}" "${tty_reset}"
+printf "%sRun ./step3.sh%s\n" "${tty_green}" "${tty_reset}"
 
 printf "\n%s==================== Script ends ====================%s\n\n" "${tty_yellow}" "${tty_reset}"
