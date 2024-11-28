@@ -67,6 +67,9 @@ sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 # Add Mullvad repo
 sudo dnf config-manager --add-repo https://repository.mullvad.net/rpm/stable/mullvad.repo
 
+# Install Jupyter Notebook
+pip install notebook
+
 # Download and install Carapace
 CARAPACE_URL="https://github.com/carapace-sh/carapace-bin/releases/download/v1.0.6/carapace-bin_1.0.6_linux_amd64.rpm"
 CARAPACE_PATH=~/Downloads/carapace-bin_1.0.6_linux_amd64.rpm
